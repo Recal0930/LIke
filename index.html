@@ -6,7 +6,6 @@
     <title>他喜欢你吗 | 超准心理测试</title>
     <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
     <style>
-        /* 样式部分和之前一致，省略 */
         * {
             margin: 0;
             padding: 0;
@@ -139,9 +138,10 @@
             font-weight: bold;
             margin: 0 5px;
         }
+        /* 圆环缩小：200px→150px，文字大小不变 */
         .circle-wrapper {
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             margin: 0 auto;
             position: relative;
             margin-bottom: 35px;
@@ -187,27 +187,31 @@
             color: #999;
             display: block;
         }
+        /* 进度条和标签样式修改 */
         .six-progress-container {
             width: 100%;
             margin: 30px 0 40px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            align-items: center;
         }
         .progress-item {
             display: flex;
             align-items: center;
             gap: 10px;
+            width: 90%;
         }
         .progress-label {
             width: 120px;
             font-size: 14px;
-            color: #666;
-            text-align: right;
+            flex-shrink: 0;
+            font-weight: 500;
         }
+        /* 进度条变细：20px→12px */
         .progress-bar-wrap {
             flex: 1;
-            height: 20px;
+            height: 12px;
             background: #f5f5f5;
             border-radius: 10px;
             overflow: hidden;
@@ -218,21 +222,21 @@
             border-radius: 10px;
             transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .progress-score {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            color: #fff;
-            font-weight: 600;
-        }
+        /* 6个等级颜色 - 标签和进度条对应 */
+        .progress-item:nth-child(1) .progress-label { color: #ffcc80; }
+        .progress-item:nth-child(2) .progress-label { color: #ffab91; }
+        .progress-item:nth-child(3) .progress-label { color: #f48fb1; }
+        .progress-item:nth-child(4) .progress-label { color: #ec407a; }
+        .progress-item:nth-child(5) .progress-label { color: #ba68c8; }
+        .progress-item:nth-child(6) .progress-label { color: #9c27b0; }
+
         .level1 { background: #ffcc80; }
         .level2 { background: #ffab91; }
         .level3 { background: #f48fb1; }
         .level4 { background: #ec407a; }
         .level5 { background: #ba68c8; }
         .level6 { background: #9c27b0; }
+        /* 结果文字样式 */
         .result-card {
             background: #fafafa;
             border-radius: 12px;
@@ -247,7 +251,7 @@
         }
         .result-desc {
             line-height: 1.8;
-            font-size: 15px;
+            font-size: 19px;
             color: #333;
             text-align: center;
             margin-bottom: 20px;
@@ -259,7 +263,7 @@
             border-radius: 4px;
         }
         .tips-text {
-            font-size: 14px;
+            font-size: 18px;
             color: #666;
             line-height: 1.6;
         }
@@ -304,42 +308,36 @@
                 <div class="progress-label">没有希望</div>
                 <div class="progress-bar-wrap">
                     <div class="progress-bar-inner level1" id="bar1"></div>
-                    <span class="progress-score" id="score1">0/15</span>
                 </div>
             </div>
             <div class="progress-item">
                 <div class="progress-label">平平淡淡</div>
                 <div class="progress-bar-wrap">
                     <div class="progress-bar-inner level2" id="bar2"></div>
-                    <span class="progress-score" id="score2">0/15</span>
                 </div>
             </div>
             <div class="progress-item">
                 <div class="progress-label">有一定的兴趣</div>
                 <div class="progress-bar-wrap">
                     <div class="progress-bar-inner level3" id="bar3"></div>
-                    <span class="progress-score" id="score3">0/15</span>
                 </div>
             </div>
             <div class="progress-item">
                 <div class="progress-label">我是他的理想型</div>
                 <div class="progress-bar-wrap">
                     <div class="progress-bar-inner level4" id="bar4"></div>
-                    <span class="progress-score" id="score4">0/15</span>
                 </div>
             </div>
             <div class="progress-item">
                 <div class="progress-label">命中注定喜欢我</div>
                 <div class="progress-bar-wrap">
                     <div class="progress-bar-inner level5" id="bar5"></div>
-                    <span class="progress-score" id="score5">0/15</span>
                 </div>
             </div>
             <div class="progress-item">
                 <div class="progress-label">非你不可</div>
                 <div class="progress-bar-wrap">
                     <div class="progress-bar-inner level6" id="bar6"></div>
-                    <span class="progress-score" id="score6">0/25</span>
                 </div>
             </div>
         </div>
@@ -353,7 +351,8 @@
     </div>
 
     <script>
-        window.onload = function() {
+        // 强制确保DOM完全加载
+        document.addEventListener('DOMContentLoaded', function() {
             const questions = [
                 { title: "1. 他会主动找你聊天吗？", options: [{text:"几乎不主动",score:1},{text:"偶尔会找我",score:2},{text:"经常主动分享日常",score:3},{text:"每天都找我聊天",score:4}]},
                 { title: "2. 聊天时他会认真回复你的消息吗？", options: [{text:"敷衍回复（哦/嗯/哈哈）",score:1},{text:"基本回复，但不会延伸话题",score:2},{text:"会回应+主动问我的情况",score:3},{text:"每条都认真回，还会找新话题",score:4}]},
@@ -395,6 +394,7 @@
                 6:{title:"【非你不可】认定你是唯一",desc:"恭喜！TA已经爱你入骨，认定你是想要共度余生的人。在TA心里，你是独一无二的存在，TA会毫无保留地对你好，也会为你们的未来努力。",tips:"好好珍惜这份真挚的爱意，大胆回应TA的心意，一起奔赴属于你们的美好未来。"}
             };
 
+            // 重新获取DOM元素，确保绑定成功
             const homePage = document.getElementById('home-page');
             const testPage = document.getElementById('test-page');
             const resultPage = document.getElementById('result-page');
@@ -411,16 +411,18 @@
             let currentQ = 0;
             let totalScore = 0;
 
-            startBtn.onclick = function() {
+            // 按钮事件重新绑定，确保触发
+            startBtn.addEventListener('click', function() {
                 homePage.classList.remove('active');
                 testPage.classList.add('active');
                 currentQ = 0;
                 totalScore = 0;
                 renderQuestion();
-            };
+            });
 
             function renderQuestion() {
                 const q = questions[currentQ];
+                if(!q) return;
                 questionContainer.innerHTML = `<div class="question-title">${q.title}</div><div class="options">${q.options.map(opt=>`<div class="option" data-score="${opt.score}">${opt.text}</div>`).join('')}</div>`;
                 
                 const progress = ((currentQ + 1)/questions.length)*100;
@@ -428,7 +430,7 @@
                 questionCount.textContent = `第${currentQ+1}题/共${questions.length}题`;
 
                 document.querySelectorAll('.option').forEach(opt=>{
-                    opt.onclick = function() {
+                    opt.addEventListener('click', function() {
                         const score = parseInt(this.dataset.score);
                         totalScore = totalScore - (q.selectedScore || 0) + score;
                         q.selectedScore = score;
@@ -443,12 +445,11 @@
                             renderQuestion();
                             window.scrollTo(0,0);
                         }
-                    }
+                    });
                 });
             }
 
             function showResult() {
-                // 核心修改：去掉round四舍五入，改用整数取整
                 const convertScore = parseInt(((totalScore - 20) / 60) * 100);
                 const currentLevel = levelConfigs.find(level=>convertScore >= level.min && convertScore <= level.max) || levelConfigs[0];
                 
@@ -458,7 +459,6 @@
 
                 levelConfigs.forEach(level=>{
                     const bar = document.getElementById(`bar${level.id}`);
-                    const scoreText = document.getElementById(`score${level.id}`);
                     let currentNum = 0;
                     let progressPercent = 0;
 
@@ -471,7 +471,6 @@
                     }
 
                     bar.style.width = `${progressPercent}%`;
-                    scoreText.textContent = `${currentNum}/${level.total}`;
                 });
 
                 const desc = resultDescs[currentLevel.id];
@@ -481,7 +480,7 @@
                 resultTips.style.borderLeftColor = currentLevel.color;
                 resultTips.innerHTML = `<p class="tips-text">「小建议」：${desc.tips}</p>`;
             }
-        };
+        });
     </script>
 </body>
 </html>
