@@ -94,12 +94,6 @@
             width: 0%;
             transition: width 0.5s ease;
         }
-        .question-count {
-            text-align: center;
-            color: #999;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
         .question {
             margin-bottom: 25px;
         }
@@ -138,7 +132,6 @@
             font-weight: bold;
             margin: 0 5px;
         }
-        /* 圆环缩小：200px→150px，文字大小不变 */
         .circle-wrapper {
             width: 150px;
             height: 150px;
@@ -187,7 +180,6 @@
             color: #999;
             display: block;
         }
-        /* 进度条和标签样式修改 */
         .six-progress-container {
             width: 100%;
             margin: 30px 0 40px;
@@ -208,7 +200,6 @@
             flex-shrink: 0;
             font-weight: 500;
         }
-        /* 进度条变细：20px→12px */
         .progress-bar-wrap {
             flex: 1;
             height: 12px;
@@ -222,7 +213,6 @@
             border-radius: 10px;
             transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        /* 6个等级颜色 - 标签和进度条对应 */
         .progress-item:nth-child(1) .progress-label { color: #ffcc80; }
         .progress-item:nth-child(2) .progress-label { color: #ffab91; }
         .progress-item:nth-child(3) .progress-label { color: #f48fb1; }
@@ -236,7 +226,6 @@
         .level4 { background: #ec407a; }
         .level5 { background: #ba68c8; }
         .level6 { background: #9c27b0; }
-        /* 结果文字样式 */
         .result-card {
             background: #fafafa;
             border-radius: 12px;
@@ -249,11 +238,11 @@
             font-weight: 600;
             margin-bottom: 15px;
         }
+        /* 修改为左对齐 */
         .result-desc {
             line-height: 1.8;
             font-size: 19px;
-            color: #333;
-            text-align: center;
+            text-align: left;
             margin-bottom: 20px;
         }
         .result-tips {
@@ -266,6 +255,7 @@
             font-size: 18px;
             color: #666;
             line-height: 1.6;
+            text-align: left;
         }
     </style>
 </head>
@@ -277,7 +267,7 @@
         </div>
         <p class="home-desc">
             我们在生活中总是能遇到这种情况：对某个人产生了兴趣，但是又不好意思确定他是不是也喜欢自己。<br>我们精心设计了一款测试，能够帮助你快速地衡量你喜欢的那个人，对你自己是不是也感兴趣。快点来找到答案吧！<br><br>
-            从日常互动细节，看穿TA的心思！<br>
+            从日常互动细节，看穿他的心思！<br>
             测试结果分6个阶段，附专属情感建议~
         </p>
         <p class="home-note">注意：本测试只针对现实生活中的朋友有效，对于明星、名人来说，做这个测试是无法找到答案的哦！</p>
@@ -288,7 +278,6 @@
         <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
-        <div class="question-count" id="question-count">第1题/共20题</div>
         <div class="question" id="question-container"></div>
     </div>
 
@@ -351,7 +340,6 @@
     </div>
 
     <script>
-        // 强制确保DOM完全加载
         document.addEventListener('DOMContentLoaded', function() {
             const questions = [
                 { title: "1. 他会主动找你聊天吗？", options: [{text:"几乎不主动",score:1},{text:"偶尔会找我",score:2},{text:"经常主动分享日常",score:3},{text:"每天都找我聊天",score:4}]},
@@ -385,22 +373,21 @@
                 {label:"非你不可",min:76,max:100,color:"#9c27b0",id:6,total:25}
             ];
 
+            // 统一将所有TA替换为男他
             const resultDescs = {
-                1:{title:"【没有希望】只是路人般的遇见",desc:"TA对你几乎没有任何特别的感觉，你们的互动仅停留在最基础的社交层面。TA不会刻意关注你的动态，也没有想要深入了解你的想法，现阶段更像是擦肩而过的普通路人。",tips:"先从创造独特交集开始，比如分享TA感兴趣的话题，慢慢刷存在感拉近距离。"},
-                2:{title:"【平平淡淡】把你当普通玩伴",desc:"TA将你视作普通朋友，会和你一起参与群体活动，但不会有专属的关心和偏爱。你们的相处轻松却少了心动的火花，TA对你的态度和对其他朋友并无二致。",tips:"尝试一对一深度交流，分享你的内心想法，让TA看到你与众不同的一面。"},
-                3:{title:"【有一定的兴趣】对你产生好奇",desc:"TA开始对你产生一丝好感和好奇，会偶尔主动找你聊天，也会留意你的小细节。但这份好感还很朦胧，TA自己可能都未察觉，也不会主动推进关系。",tips:"适当制造小暧昧，比如偶尔的撒娇或调侃，让TA的好感从好奇升级为心动。"},
-                4:{title:"【我是他的理想型】悄悄对你动心了",desc:"TA的心里已经悄悄对你萌生了心动，会下意识地关注你、照顾你，甚至会因为你和其他异性互动而感到失落。只是TA还处于害羞或犹豫的阶段，不敢轻易表露心意。",tips:"给TA一点明确暗示，比如主动约TA单独见面，让TA知道你也对TA有好感。"},
-                5:{title:"【命中注定喜欢我】深深喜欢你啦",desc:"TA已经深深喜欢你了！TA的目光总会追着你，会把你的喜好记在心里，也会把你规划进日常的小事里。TA可能已经在纠结如何向你表白，只是缺少一点勇气。",tips:"如果你也心动，不妨主动戳破这层窗户纸，一句喜欢就能开启双向奔赴。"},
-                6:{title:"【非你不可】认定你是唯一",desc:"恭喜！TA已经爱你入骨，认定你是想要共度余生的人。在TA心里，你是独一无二的存在，TA会毫无保留地对你好，也会为你们的未来努力。",tips:"好好珍惜这份真挚的爱意，大胆回应TA的心意，一起奔赴属于你们的美好未来。"}
+                1:{title:"【没有希望】只是路人般的遇见",desc:"他对你几乎没有任何特别的感觉，你们的互动仅停留在最基础的社交层面。他不会刻意关注你的动态，也没有想要深入了解你的想法，现阶段更像是擦肩而过的普通路人。",tips:"先从创造独特交集开始，比如分享他感兴趣的话题，慢慢刷存在感拉近距离。"},
+                2:{title:"【平平淡淡】把你当普通玩伴",desc:"他将你视作普通朋友，会和你一起参与群体活动，但不会有专属的关心和偏爱。你们的相处轻松却少了心动的火花，他对你的态度和对其他朋友并无二致。",tips:"尝试一对一深度交流，分享你的内心想法，让他看到你与众不同的一面。"},
+                3:{title:"【有一定的兴趣】对你产生好奇",desc:"他开始对你产生一丝好感和好奇，会偶尔主动找你聊天，也会留意你的小细节。但这份好感还很朦胧，他自己可能都未察觉，也不会主动推进关系。",tips:"适当制造小暧昧，比如偶尔的撒娇或调侃，让他的好感从好奇升级为心动。"},
+                4:{title:"【我是他的理想型】悄悄对你动心了",desc:"他的心里已经悄悄对你萌生了心动，会下意识地关注你、照顾你，甚至会因为你和其他异性互动而感到失落。只是他还处于害羞或犹豫的阶段，不敢轻易表露心意。",tips:"给他一点明确暗示，比如主动约他单独见面，让他知道你也对他有好感。"},
+                5:{title:"【命中注定喜欢我】深深喜欢你啦",desc:"他已经深深喜欢你了！他的目光总会追着你，会把你的喜好记在心里，也会把你规划进日常的小事里。他可能已经在纠结如何向你表白，只是缺少一点勇气。",tips:"如果你也心动，不妨主动戳破这层窗户纸，一句喜欢就能开启双向奔赴。"},
+                6:{title:"【非你不可】认定你是唯一",desc:"恭喜！他已经爱你入骨，认定你是想要共度余生的人。在他心里，你是独一无二的存在，他会毫无保留地对你好，也会为你们的未来努力。",tips:"好好珍惜这份真挚的爱意，大胆回应他的心意，一起奔赴属于你们的美好未来。"}
             };
 
-            // 重新获取DOM元素，确保绑定成功
             const homePage = document.getElementById('home-page');
             const testPage = document.getElementById('test-page');
             const resultPage = document.getElementById('result-page');
             const startBtn = document.getElementById('start-test');
             const progressBar = document.getElementById('progress-bar');
-            const questionCount = document.getElementById('question-count');
             const questionContainer = document.getElementById('question-container');
             const circleProgress = document.getElementById('circle-progress');
             const circleScore = document.getElementById('circle-score');
@@ -411,7 +398,6 @@
             let currentQ = 0;
             let totalScore = 0;
 
-            // 按钮事件重新绑定，确保触发
             startBtn.addEventListener('click', function() {
                 homePage.classList.remove('active');
                 testPage.classList.add('active');
@@ -427,7 +413,6 @@
                 
                 const progress = ((currentQ + 1)/questions.length)*100;
                 progressBar.style.width = `${progress}%`;
-                questionCount.textContent = `第${currentQ+1}题/共${questions.length}题`;
 
                 document.querySelectorAll('.option').forEach(opt=>{
                     opt.addEventListener('click', function() {
@@ -477,6 +462,7 @@
                 resultTitle.textContent = desc.title;
                 resultTitle.style.color = currentLevel.color;
                 resultDesc.textContent = desc.desc;
+                resultDesc.style.color = currentLevel.color;
                 resultTips.style.borderLeftColor = currentLevel.color;
                 resultTips.innerHTML = `<p class="tips-text">「小建议」：${desc.tips}</p>`;
             }
