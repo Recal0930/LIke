@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>他喜欢你吗 | 超准心理测试</title>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        /* 样式部分和之前一致，省略 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #fcf1f7 0%, #faf0f5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            padding: 30px;
+            display: none;
+        }
+        .container.active {
+            display: block;
+        }
+        .home-banner {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fef7fb 100%);
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .home-main-title {
+            font-family: "Indie Flower", cursive;
+            color: #e91e63;
+            font-size: 40px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .home-sub-title {
+            font-family: "Indie Flower", cursive;
+            color: #666;
+            font-size: 18px;
+            font-weight: 400;
+        }
+        .home-desc {
+            color: #333;
+            line-height: 1.8;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .home-note {
+            color: #e53e3e;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .start-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #e91e63, #ec407a);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .start-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
+        }
+        .progress {
+            width: 100%;
+            height: 6px;
+            background: #f5f5f5;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #e91e63, #ec407a);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .question-count {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .question {
+            margin-bottom: 25px;
+        }
+        .question-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px 15px;
+            border: 2px solid #f0f0f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+        .option:active {
+            border-color: #e91e63;
+            background: #fef2f2;
+            color: #e91e63;
+        }
+        .result-header {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        .result-header strong {
+            font-weight: bold;
+            margin: 0 5px;
+        }
+        .circle-wrapper {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+            margin-bottom: 35px;
+        }
+        .circle-progress {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(#f5f5f5 0% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .circle-progress::before {
+            content: "";
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .circle-value {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .circle-score {
+            font-size: 48px;
+            font-weight: bold;
+            display: block;
+            line-height: 1;
+        }
+        .circle-line {
+            width: 35px;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 8px auto;
+        }
+        .circle-total {
+            font-size: 14px;
+            color: #999;
+            display: block;
+        }
+        .six-progress-container {
+            width: 100%;
+            margin: 30px 0 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .progress-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .progress-label {
+            width: 120px;
+            font-size: 14px;
+            color: #666;
+            text-align: right;
+        }
+        .progress-bar-wrap {
+            flex: 1;
+            height: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-inner {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .progress-score {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #fff;
+            font-weight: 600;
+        }
+        .level1 { background: #ffcc80; }
+        .level2 { background: #ffab91; }
+        .level3 { background: #f48fb1; }
+        .level4 { background: #ec407a; }
+        .level5 { background: #ba68c8; }
+        .level6 { background: #9c27b0; }
+        .result-card {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .result-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .result-desc {
+            line-height: 1.8;
+            font-size: 15px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result-tips {
+            padding: 12px 15px;
+            background: #f5f5f5;
+            border-left: 3px solid;
+            border-radius: 4px;
+        }
+        .tips-text {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container active" id="home-page">
+        <div class="home-banner">
+            <h1 class="home-main-title">他喜欢你吗</h1>
+            <p class="home-sub-title">测测你喜欢的男生是不是喜欢自己</p>
+        </div>
+        <p class="home-desc">
+            我们在生活中总是能遇到这种情况：对某个人产生了兴趣，但是又不好意思确定他是不是也喜欢自己。<br>我们精心设计了一款测试，能够帮助你快速地衡量你喜欢的那个人，对你自己是不是也感兴趣。快点来找到答案吧！<br><br>
+            从日常互动细节，看穿TA的心思！<br>
+            测试结果分6个阶段，附专属情感建议~
+        </p>
+        <p class="home-note">注意：本测试只针对现实生活中的朋友有效，对于明星、名人来说，做这个测试是无法找到答案的哦！</p>
+        <button class="start-btn" id="start-test">开始测试</button>
+    </div>
+
+    <div class="container" id="test-page">
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="question-count" id="question-count">第1题/共20题</div>
+        <div class="question" id="question-container"></div>
+    </div>
+
+    <div class="container" id="result-page">
+        <div class="result-header">经测试，他 <strong>喜欢你的程度</strong> 是：</div>
+        <div class="circle-wrapper">
+            <div class="circle-progress" id="circle-progress">
+                <div class="circle-value">
+                    <span class="circle-score" id="circle-score">0</span>
+                    <div class="circle-line"></div>
+                    <span class="circle-total">100</span>
+                </div>
+            </div>
+        </div>
+        <div class="six-progress-container">
+            <div class="progress-item">
+                <div class="progress-label">没有希望</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-inner level1" id="bar1"></div>
+                    <span class="progress-score" id="score1">0/15</span>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-label">平平淡淡</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-inner level2" id="bar2"></div>
+                    <span class="progress-score" id="score2">0/15</span>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-label">有一定的兴趣</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-inner level3" id="bar3"></div>
+                    <span class="progress-score" id="score3">0/15</span>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-label">我是他的理想型</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-inner level4" id="bar4"></div>
+                    <span class="progress-score" id="score4">0/15</span>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-label">命中注定喜欢我</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-inner level5" id="bar5"></div>
+                    <span class="progress-score" id="score5">0/15</span>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-label">非你不可</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-inner level6" id="bar6"></div>
+                    <span class="progress-score" id="score6">0/25</span>
+                </div>
+            </div>
+        </div>
+        <div class="result-card" id="result-card">
+            <h3 class="result-title" id="result-title">结果标题</h3>
+            <p class="result-desc" id="result-desc">结果描述</p>
+            <div class="result-tips" id="result-tips">
+                <p class="tips-text">「小建议」：专属情感小贴士</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const questions = [
+                { title: "1. 他会主动找你聊天吗？", options: [{text:"几乎不主动",score:1},{text:"偶尔会找我",score:2},{text:"经常主动分享日常",score:3},{text:"每天都找我聊天",score:4}]},
+                { title: "2. 聊天时他会认真回复你的消息吗？", options: [{text:"敷衍回复（哦/嗯/哈哈）",score:1},{text:"基本回复，但不会延伸话题",score:2},{text:"会回应+主动问我的情况",score:3},{text:"每条都认真回，还会找新话题",score:4}]},
+                { title: "3. 他会记住你的小习惯/喜好吗？", options: [{text:"完全不记得",score:1},{text:"提过一次可能会记",score:2},{text:"会记住1-2个我的喜好",score:3},{text:"很多小细节都记得很清楚",score:4}]},
+                { title: "4. 遇到困难时，他会主动帮你吗？", options: [{text:"假装没看见，不会帮忙",score:1},{text:"我开口求他才会帮",score:2},{text:"主动问我需不需要帮忙",score:3},{text:"不用我说，直接主动帮忙解决",score:4}]},
+                { title: "5. 他会在意你和其他异性的互动吗？", options: [{text:"完全不在意",score:1},{text:"看到了但没反应",score:2},{text:"会问我那个异性是谁",score:3},{text:"会有点吃醋，表现出不开心",score:4}]},
+                { title: "6. 和他见面时，他的眼神会一直看你吗？", options: [{text:"很少看我，眼神躲闪",score:1},{text:"偶尔对视，很快移开",score:2},{text:"经常对视，会笑一笑",score:3},{text:"眼神一直黏着我，很温柔",score:4}]},
+                { title: "7. 他会主动约你单独见面吗？", options: [{text:"从不约我",score:1},{text:"只有群体活动才会叫我",score:2},{text:"偶尔会约我单独吃饭/逛街",score:3},{text:"经常主动约我单独相处",score:4}]},
+                { title: "8. 他会向朋友提起你吗？", options: [{text:"没提过，他朋友都不知道我",score:1},{text:"偶尔提过一两次",score:2},{text:"经常和朋友聊起我",score:3},{text:"会主动带我认识他的好朋友",score:4}]},
+                { title: "9. 他会关注你的动态（朋友圈/抖音）吗？", options: [{text:"从不点赞评论",score:1},{text:"偶尔点赞，不评论",score:2},{text:"每条都点赞，偶尔评论",score:3},{text:"秒赞+认真评论，还会私聊问细节",score:4}]},
+                { title: "10. 他会对你撒娇/示弱吗？", options: [{text:"不会，对我很客气疏远",score:1},{text:"只有很熟之后才偶尔会",score:2},{text:"会和我分享小烦恼",score:3},{text:"经常对我撒娇，展现脆弱的一面",score:4}]},
+                { title: "11. 他会在意你的情绪变化吗？", options: [{text:"完全没察觉",score:1},{text:"察觉了但没安慰",score:2},{text:"会问我是不是不开心",score:3},{text:"一眼看穿我的情绪，主动哄我",score:4}]},
+                { title: "12. 他会送你小礼物/小零食吗？", options: [{text:"从没送过",score:1},{text:"节日才会送（比如生日）",score:2},{text:"看到我喜欢的东西会买给我",score:3},{text:"经常给我带小惊喜",score:4}]},
+                { title: "13. 他会和你规划未来的小事吗？", options: [{text:"从不聊未来相关的事",score:1},{text:"偶尔聊起，但很敷衍",score:2},{text:"会聊一起去某个地方玩",score:3},{text:"会把我规划进他的未来里",score:4}]},
+                { title: "14. 他和你相处时，会紧张吗？", options: [{text:"很放松，像对普通朋友一样",score:1},{text:"偶尔有点小紧张",score:2},{text:"经常会脸红/结巴",score:3},{text:"一见到我就紧张得不知所措",score:4}]},
+                { title: "15. 他会模仿你的口头禅/小动作吗？", options: [{text:"完全不会",score:1},{text:"没注意到有模仿",score:2},{text:"偶尔会说我的口头禅",score:3},{text:"很多小动作都和我越来越像",score:4}]},
+                { title: "16. 他会拒绝你的邀约吗？", options: [{text:"经常拒绝，找各种理由",score:1},{text:"偶尔拒绝，理由合理",score:2},{text:"很少拒绝，拒绝了会补偿我",score:3},{text:"从不拒绝，再忙都会抽空",score:4}]},
+                { title: "17. 他会主动了解你的兴趣爱好吗？", options: [{text:"完全不关心",score:1},{text:"我说起时会听一听",score:2},{text:"会主动问我喜欢的东西",score:3},{text:"会去了解我的爱好，和我一起玩",score:4}]},
+                { title: "18. 他会在你面前表现自己吗？", options: [{text:"不会，很低调",score:1},{text:"偶尔会展示一点特长",score:2},{text:"经常在我面前表现优点",score:3},{text:"总想在我面前刷存在感，吸引我注意",score:4}]},
+                { title: "19. 他会对你和对别人不一样吗？", options: [{text:"没区别，对谁都一样",score:1},{text:"有点区别，但不明显",score:2},{text:"明显对我更温柔/耐心",score:3},{text:"只对我特别好，对别人很冷淡",score:4}]},
+                { title: "20. 你觉得他喜欢你吗？（直觉题）", options: [{text:"完全不喜欢",score:1},{text:"有点好感？不确定",score:2},{text:"应该是喜欢我的",score:3},{text:"肯定超喜欢我",score:4}]}
+            ];
+
+            const levelConfigs = [
+                {label:"没有希望",min:0,max:15,color:"#ffcc80",id:1,total:15},
+                {label:"平平淡淡",min:16,max:30,color:"#ffab91",id:2,total:15},
+                {label:"有一定的兴趣",min:31,max:45,color:"#f48fb1",id:3,total:15},
+                {label:"我是他的理想型",min:46,max:60,color:"#ec407a",id:4,total:15},
+                {label:"命中注定喜欢我",min:61,max:75,color:"#ba68c8",id:5,total:15},
+                {label:"非你不可",min:76,max:100,color:"#9c27b0",id:6,total:25}
+            ];
+
+            const resultDescs = {
+                1:{title:"【没有希望】只是路人般的遇见",desc:"TA对你几乎没有任何特别的感觉，你们的互动仅停留在最基础的社交层面。TA不会刻意关注你的动态，也没有想要深入了解你的想法，现阶段更像是擦肩而过的普通路人。",tips:"先从创造独特交集开始，比如分享TA感兴趣的话题，慢慢刷存在感拉近距离。"},
+                2:{title:"【平平淡淡】把你当普通玩伴",desc:"TA将你视作普通朋友，会和你一起参与群体活动，但不会有专属的关心和偏爱。你们的相处轻松却少了心动的火花，TA对你的态度和对其他朋友并无二致。",tips:"尝试一对一深度交流，分享你的内心想法，让TA看到你与众不同的一面。"},
+                3:{title:"【有一定的兴趣】对你产生好奇",desc:"TA开始对你产生一丝好感和好奇，会偶尔主动找你聊天，也会留意你的小细节。但这份好感还很朦胧，TA自己可能都未察觉，也不会主动推进关系。",tips:"适当制造小暧昧，比如偶尔的撒娇或调侃，让TA的好感从好奇升级为心动。"},
+                4:{title:"【我是他的理想型】悄悄对你动心了",desc:"TA的心里已经悄悄对你萌生了心动，会下意识地关注你、照顾你，甚至会因为你和其他异性互动而感到失落。只是TA还处于害羞或犹豫的阶段，不敢轻易表露心意。",tips:"给TA一点明确暗示，比如主动约TA单独见面，让TA知道你也对TA有好感。"},
+                5:{title:"【命中注定喜欢我】深深喜欢你啦",desc:"TA已经深深喜欢你了！TA的目光总会追着你，会把你的喜好记在心里，也会把你规划进日常的小事里。TA可能已经在纠结如何向你表白，只是缺少一点勇气。",tips:"如果你也心动，不妨主动戳破这层窗户纸，一句喜欢就能开启双向奔赴。"},
+                6:{title:"【非你不可】认定你是唯一",desc:"恭喜！TA已经爱你入骨，认定你是想要共度余生的人。在TA心里，你是独一无二的存在，TA会毫无保留地对你好，也会为你们的未来努力。",tips:"好好珍惜这份真挚的爱意，大胆回应TA的心意，一起奔赴属于你们的美好未来。"}
+            };
+
+            const homePage = document.getElementById('home-page');
+            const testPage = document.getElementById('test-page');
+            const resultPage = document.getElementById('result-page');
+            const startBtn = document.getElementById('start-test');
+            const progressBar = document.getElementById('progress-bar');
+            const questionCount = document.getElementById('question-count');
+            const questionContainer = document.getElementById('question-container');
+            const circleProgress = document.getElementById('circle-progress');
+            const circleScore = document.getElementById('circle-score');
+            const resultTitle = document.getElementById('result-title');
+            const resultDesc = document.getElementById('result-desc');
+            const resultTips = document.getElementById('result-tips');
+
+            let currentQ = 0;
+            let totalScore = 0;
+
+            startBtn.onclick = function() {
+                homePage.classList.remove('active');
+                testPage.classList.add('active');
+                currentQ = 0;
+                totalScore = 0;
+                renderQuestion();
+            };
+
+            function renderQuestion() {
+                const q = questions[currentQ];
+                questionContainer.innerHTML = `<div class="question-title">${q.title}</div><div class="options">${q.options.map(opt=>`<div class="option" data-score="${opt.score}">${opt.text}</div>`).join('')}</div>`;
+                
+                const progress = ((currentQ + 1)/questions.length)*100;
+                progressBar.style.width = `${progress}%`;
+                questionCount.textContent = `第${currentQ+1}题/共${questions.length}题`;
+
+                document.querySelectorAll('.option').forEach(opt=>{
+                    opt.onclick = function() {
+                        const score = parseInt(this.dataset.score);
+                        totalScore = totalScore - (q.selectedScore || 0) + score;
+                        q.selectedScore = score;
+
+                        if(currentQ === questions.length -1) {
+                            testPage.classList.remove('active');
+                            resultPage.classList.add('active');
+                            showResult();
+                            window.scrollTo(0,0);
+                        } else {
+                            currentQ++;
+                            renderQuestion();
+                            window.scrollTo(0,0);
+                        }
+                    }
+                });
+            }
+
+            function showResult() {
+                // 核心修改：去掉round四舍五入，改用整数取整
+                const convertScore = parseInt(((totalScore - 20) / 60) * 100);
+                const currentLevel = levelConfigs.find(level=>convertScore >= level.min && convertScore <= level.max) || levelConfigs[0];
+                
+                circleProgress.style.background = `conic-gradient(${currentLevel.color} 0% ${convertScore}%, #f5f5f5 ${convertScore}% 100%)`;
+                circleScore.textContent = convertScore;
+                circleScore.style.color = currentLevel.color;
+
+                levelConfigs.forEach(level=>{
+                    const bar = document.getElementById(`bar${level.id}`);
+                    const scoreText = document.getElementById(`score${level.id}`);
+                    let currentNum = 0;
+                    let progressPercent = 0;
+
+                    if(convertScore >= level.max) {
+                        currentNum = level.total;
+                        progressPercent = 100;
+                    } else if(convertScore >= level.min && convertScore <= level.max) {
+                        currentNum = convertScore - level.min;
+                        progressPercent = (currentNum/level.total)*100;
+                    }
+
+                    bar.style.width = `${progressPercent}%`;
+                    scoreText.textContent = `${currentNum}/${level.total}`;
+                });
+
+                const desc = resultDescs[currentLevel.id];
+                resultTitle.textContent = desc.title;
+                resultTitle.style.color = currentLevel.color;
+                resultDesc.textContent = desc.desc;
+                resultTips.style.borderLeftColor = currentLevel.color;
+                resultTips.innerHTML = `<p class="tips-text">「小建议」：${desc.tips}</p>`;
+            }
+        };
+    </script>
+</body>
+</html>
